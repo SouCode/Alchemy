@@ -1,15 +1,15 @@
 const User = require('../Models/User');
 
-exports.createUser = async (req, res) => {
-    // Implementation of user creation
-    // This should take the user data from req.body and create a new user in the database
-    // Once created, it should send a response to the client
+exports.getCurrentUser = async (req, res) => {
+  if (!req.user) {
+    res.status(401).send('Not logged in');
+    return;
+  }
+  const user = await User.findById(req.user.id);
+  res.send(user);
 };
 
-exports.getUser = async (req, res) => {
-    // Implementation of fetching user
-    // This should take the user ID from req.params and fetch the user from the database
-    // Once fetched, it should send a response to the client
+exports.logout = (req, res) => {
+  req.logout();
+  res.redirect('/');
 };
-
-// ... Any other user-related controllers
