@@ -8,19 +8,14 @@ const UserSchema = new mongoose.Schema({
     displayName: {
         type: String,
     },
-    firstName: {
+    email: {
         type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    image: {
-        type: String
     },
     createdAt: {
         type: Date,
         default: Date.now
     }
 });
+
 
 module.exports = mongoose.model('User', UserSchema);
