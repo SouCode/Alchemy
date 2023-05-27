@@ -1,20 +1,39 @@
-// The specific functions here would depend on what you want to do with the Alpaca API.
-// This is a simplified example.
+const AlpacaUser = require('../Models/AlpacaUser');
 
-const Alpaca = require('@alpacahq/alpaca-trade-api');
-const alpaca = new Alpaca({
-  keyId: process.env.ALPACA_API_KEY,
-  secretKey: process.env.ALPACA_SECRET_KEY,
-  paper: true,
-  usePolygon: false
-});
-
-exports.getAlpacaAccount = async (req, res) => {
-  const account = await alpaca.getAccount();
-  res.send(account);
+// Controller function for creating an Alpaca account for a user
+exports.createAlpacaUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    // Check if the user already has an Alpaca account
+    const existingUser = await AlpacaUser.findOne({ userId });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Alpaca account already exists for this user' });
+    }
+    
+    // Create a new Alpaca account
+    const alpacaUser = await AlpacaUser.create({ userId });
+    res.status(201).json({ message: 'Alpaca account created successfully', alpacaUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
-exports.getAlpacaPortfolio = async (req, res) => {
-  const portfolio = await alpaca.getPortfolioHistory();
-  res.send(portfolio);
+// Controller function for getting an Alpaca account for a user
+exports.getAlpacaUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Retrieve the Alpaca account for the specified user
+    const alpacaUser = await AlpacaUser.findOne({ userId: id });
+    if (!alpacaUser) {
+      return res.status(404).json({ error: 'Alpaca account not found' });
+    }
+    
+    res.status(200).json(alpacaUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };

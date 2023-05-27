@@ -23,9 +23,11 @@ app.use(passport.session());
 
 const authRoutes = require('./Routes/AuthRoutes');
 const dashboardRoutes = require('./Routes/dashboardRoutes');
+const userRoutes = require('./Routes/UserRoutes'); // Import the userRoutes
 
 app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/api', userRoutes); // Mount the userRoutes under '/api'
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
