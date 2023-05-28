@@ -1,39 +1,45 @@
-const AlpacaUser = require('../Models/AlpacaUser');
+const AlpacaUtils = require('../Utils/AlpacaUtils');
 
-// Controller function for creating an Alpaca account for a user
-exports.createAlpacaUser = async (req, res) => {
+exports.saveAlpacaKeys = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { apiKey, secretKey } = req.body;
+    const encryptedApiKey = encrypt(apiKey); // Encrypt the API key
+    const encryptedSecretKey = encrypt(secretKey); // Encrypt the secret key
     
-    // Check if the user already has an Alpaca account
-    const existingUser = await AlpacaUser.findOne({ userId });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Alpaca account already exists for this user' });
-    }
+    // Save the encrypted API keys to the user's profile
+    await User.findOneAndUpdate(
+      { _id: req.user.id },
+      { alpaca: { apiKey: encryptedApiKey, secretKey: encryptedSecretKey } }
+    );
     
-    // Create a new Alpaca account
-    const alpacaUser = await AlpacaUser.create({ userId });
-    res.status(201).json({ message: 'Alpaca account created successfully', alpacaUser });
+    res.status(200).send('Alpaca API keys saved successfully');
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).send('Error saving Alpaca API keys');
   }
 };
 
-// Controller function for getting an Alpaca account for a user
-exports.getAlpacaUser = async (req, res) => {
+exports.getAlpacaAccount = async (req, res) => {
   try {
-    const { id } = req.params;
+    const user = await User.findById(req.user.id);
+    const apiKey = decrypt(user.alpaca.apiKey); // Decrypt the API key
+    const secretKey = decrypt(user.alpaca.secretKey); // Decrypt the secret key
     
-    // Retrieve the Alpaca account for the specified user
-    const alpacaUser = await AlpacaUser.findOne({ userId: id });
-    if (!alpacaUser) {
-      return res.status(404).json({ error: 'Alpaca account not found' });
-    }
-    
-    res.status(200).json(alpacaUser);
+    const account = await AlpacaUtils.getAccountInformation(apiKey, secretKey);
+    res.send(account);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).send('Error retrieving Alpaca account');
+  }
+};
+
+exports.getAlpacaPortfolio = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const apiKey = decrypt(user.alpaca.apiKey); // Decrypt the API key
+    const secretKey = decrypt(user.alpaca.secretKey); // Decrypt the secret key
+    
+    const portfolio = await AlpacaUtils.getPortfolioHistory(apiKey, secretKey);
+    res.send(portfolio);
+  } catch (error) {
+    res.status(500).send('Error retrieving Alpaca portfolio');
   }
 };

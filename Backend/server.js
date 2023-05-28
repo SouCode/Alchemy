@@ -1,5 +1,5 @@
 const express = require('express');
-const connectDB = require('./Utils/Database');
+const connectDB = require('./utils/Database');
 const passportSetup = require('./Utils/GoogleAuth');
 const passport = require('passport');
 const session = require('express-session');
@@ -21,13 +21,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const authRoutes = require('./Routes/AuthRoutes');
-const dashboardRoutes = require('./Routes/dashboardRoutes');
-const userRoutes = require('./Routes/UserRoutes'); // Import the userRoutes
+const authRoutes = require('./routes/AuthRoutes');
+const dashboardRoutes = require('./routes/DashboardRoutes');
+const userRoutes = require('./Routes/UserRoutes');
 
-app.use('/', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
-app.use('/api', userRoutes); // Mount the userRoutes under '/api'
+app.use('/user', userRoutes); // Add this line to use UserRoutes
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
