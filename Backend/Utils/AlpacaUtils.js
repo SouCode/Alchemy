@@ -10,14 +10,14 @@ const getAccountInformation = async (apiKey, secretKey) => {
   return alpaca.getAccount();
 };
 
-const getPortfolioHistory = async (apiKey, secretKey) => {
+const getPortfolio = async (apiKey, secretKey) => {
   const alpaca = new Alpaca({
     keyId: apiKey,
     secretKey,
     paper: true,
     usePolygon: false
   });
-  return alpaca.getPortfolioHistory();
+  return alpaca.getPortfolio();
 };
 
-module.exports = { getAccountInformation, getPortfolioHistory };
+module.exports = { getAccountInformation, getPortfolio };

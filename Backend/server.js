@@ -1,8 +1,9 @@
 const express = require('express');
 const connectDB = require('./Utils/Database');
-const passportSetup = require('./Utils/GoogleAuth');
 const passport = require('passport');
+const portfolioRoutes = require('./Routes/PortfolioRoutes');
 const session = require('express-session');
+const AlpacaUtils = require('./Utils/AlpacaUtils'); // Import AlpacaUtils
 
 require('dotenv').config();
 
@@ -27,12 +28,15 @@ const dashboardRoutes = require('./Routes/dashboardRoutes');
 const userRoutes = require('./Routes/UserRoutes');
 const protectedRoutes = require('./Routes/ProtectedRoutes');
 
-
 app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
-app.use('/user', userRoutes); // Add this line to use UserRoutes
+app.use('/user', userRoutes);
 app.use('/protected', protectedRoutes);
+app.use('/portfolio', portfolioRoutes);
 
+// Alpaca API routes
+app.get('/account', AlpacaUtils.getAccountInformation);
+app.get('/portfolio', AlpacaUtils.getPortfolio);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));

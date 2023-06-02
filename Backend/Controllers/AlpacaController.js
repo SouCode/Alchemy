@@ -19,30 +19,32 @@ exports.saveAlpacaKeys = async (req, res) => {
   }
 };
 
-exports.getAlpacaAccount = async (req, res) => {
+exports.getAccountInformation = async (req, res) => {
   try {
-    const user = await User.findOne({ googleId: req.user.googleId });
+    // Retrieve the user's Alpaca API keys from the database
+    const user = await User.findById(mongoose.Types.ObjectId(req.user.id));
+    const { apiKey, secretKey } = user.alpaca;
 
-    const apiKey = decrypt(user.alpaca.apiKey); // Decrypt the API key
-    const secretKey = decrypt(user.alpaca.secretKey); // Decrypt the secret key
-
+    // Get the account information using the Alpaca API
     const account = await AlpacaUtils.getAccountInformation(apiKey, secretKey);
-    res.send(account);
+
+    res.json(account);
   } catch (error) {
-    res.status(500).send('Error retrieving Alpaca account');
+    res.status(500).json({ error: 'Error retrieving Alpaca account information' });
   }
 };
 
-exports.getAlpacaPortfolio = async (req, res) => {
+exports.getPortfolio = async (req, res) => {
   try {
-    const user = await User.findOne({ googleId: req.user.googleId });
+    // Retrieve the user's Alpaca API keys from the database
+    const user = await User.findById(mongoose.Types.ObjectId(req.user.id));
+    const { apiKey, secretKey } = user.alpaca;
 
-    const apiKey = decrypt(user.alpaca.apiKey); // Decrypt the API key
-    const secretKey = decrypt(user.alpaca.secretKey); // Decrypt the secret key
+    // Get the portfolio information using the Alpaca API
+    const portfolio = await AlpacaUtils.getPortfolio(apiKey, secretKey);
 
-    const portfolio = await AlpacaUtils.getPortfolioHistory(apiKey, secretKey);
-    res.send(portfolio);
+    res.json(portfolio);
   } catch (error) {
-    res.status(500).send('Error retrieving Alpaca portfolio');
+    res.status(500).json({ error: 'Error retrieving Alpaca portfolio' });
   }
 };
