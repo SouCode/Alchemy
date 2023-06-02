@@ -3,26 +3,18 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   googleId: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   displayName: {
     type: String
   },
-  email: {
-    type: String
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
   alpaca: {
     apiKey: {
-      type: String,
-      required: true
+      type: String
     },
     secretKey: {
-      type: String,
-      required: true
+      type: String
     }
   }
 });
