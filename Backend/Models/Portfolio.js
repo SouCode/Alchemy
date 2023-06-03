@@ -18,6 +18,15 @@ const PortfolioSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  performance: {
+    type: Number,
+    default: 0
+  },
+  percentChange: {
+    type: Number,
+    default: 0
+  }
+  
   // Additional fields...
 });
 

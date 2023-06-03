@@ -20,4 +20,16 @@ const getPortfolio = async (apiKey, secretKey) => {
   return alpaca.getPortfolio();
 };
 
-module.exports = { getAccountInformation, getPortfolio };
+const getCurrentPrice = async (symbol) => {
+  const alpaca = new Alpaca({
+    keyId: process.env.ALAPCA_API_KEY,
+    secretKey: process.env.ALAPCA_SECRET_KEY,
+    paper: true,
+    usePolygon: false
+  });
+
+  const quote = await alpaca.getQuote(symbol);
+  return quote.last.price;
+};
+
+module.exports = { getAccountInformation, getPortfolio, getCurrentPrice };
