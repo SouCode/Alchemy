@@ -2,9 +2,9 @@ const Portfolio = require('../Models/Portfolio');
 const AlpacaUtils = require('../Utils/AlpacaUtils');
 
 
-
 exports.getPortfolio = async (req, res) => {
-    try {
+    // Existing code...
+      try {
       const userId = req.user._id;
   
       // Get all holdings for the user
@@ -92,3 +92,15 @@ exports.updateHolding = async (req, res) => {
   }
 };
 
+// Delete a holding from the portfolio
+exports.deleteHolding = async (req, res) => {
+    try {
+      const { id } = req.params;
+      // Delete the holding using the ID
+      // Your code for deleting the holding goes here
+      res.json({ message: 'Holding deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete holding' });
+    }
+  };
+  

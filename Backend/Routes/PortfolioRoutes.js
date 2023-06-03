@@ -6,7 +6,7 @@ const portfolioController = require('../Controllers/PortfolioController');
 router.post('/add', portfolioController.addHolding);
 
 // Fetch all holdings in the portfolio
-router.get('/', portfolioController.getAllHoldings);
+router.get('/', portfolioController.getPortfolio);
 
 // Update a holding in the portfolio
 router.put('/:id', portfolioController.updateHolding);

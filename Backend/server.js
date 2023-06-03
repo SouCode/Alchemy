@@ -1,9 +1,12 @@
 const express = require('express');
 const connectDB = require('./Utils/Database');
+const passportSetup = require('./Utils/GoogleAuth');
 const passport = require('passport');
+const AlpacaUtils = require('./Utils/AlpacaUtils'); // Add this line
 const portfolioRoutes = require('./Routes/PortfolioRoutes');
+const transactionRoutes = require('./Routes/TransactionRoutes');
+
 const session = require('express-session');
-const AlpacaUtils = require('./Utils/AlpacaUtils'); // Import AlpacaUtils
 
 require('dotenv').config();
 
@@ -33,6 +36,7 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/user', userRoutes);
 app.use('/protected', protectedRoutes);
 app.use('/portfolio', portfolioRoutes);
+app.use('/transaction', transactionRoutes);
 
 // Alpaca API routes
 app.get('/account', AlpacaUtils.getAccountInformation);
