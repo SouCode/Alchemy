@@ -1,5 +1,5 @@
 const AlpacaUtils = require('../Utils/AlpacaUtils');
-const User = require('../Models/User');
+const HistoricalData = require('../Models/HistoricalData');
 
 exports.saveAlpacaKeys = async (req, res) => {
   try {
@@ -46,5 +46,28 @@ exports.getPortfolio = async (req, res) => {
     res.json(portfolio);
   } catch (error) {
     res.status(500).json({ error: 'Error retrieving Alpaca portfolio' });
+  }
+};
+
+exports.retrieveHistoricalData = async (req, res) => {
+  try {
+    // Retrieve the user's Alpaca API keys from the database
+    const user = await User.findById(mongoose.Types.ObjectId(req.user.id));
+    const { apiKey, secretKey } = user.alpaca;
+
+    // Retrieve the list of symbols for which to retrieve historical data
+    const symbols = ['AAPL', 'GOOGL', 'MSFT']; // Replace with your desired symbols
+
+    // Retrieve and save historical data for each symbol
+    for (const symbol of symbols) {
+      const historicalData = await AlpacaUtils.getHistoricalData(apiKey, secretKey, symbol);
+
+      // Save the historical data to the database
+      await HistoricalData.insertMany(historicalData);
+    }
+
+    res.status(200).send('Historical data retrieved and saved successfully');
+  } catch (error) {
+    res.status(500).json({ error: 'Error retrieving and saving historical data' });
   }
 };
