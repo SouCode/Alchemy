@@ -1,10 +1,13 @@
+// Backend/server.js
+
 const express = require('express');
 const connectDB = require('./Utils/Database');
 const passportSetup = require('./Utils/GoogleAuth');
 const passport = require('passport');
-const AlpacaUtils = require('./Utils/AlpacaUtils'); // Add this line
+const AlpacaUtils = require('./Utils/AlpacaUtils');
 const portfolioRoutes = require('./Routes/PortfolioRoutes');
 const transactionRoutes = require('./Routes/TransactionRoutes');
+const historicalDataRoutes = require('./Routes/HistoricalDataRoutes'); // Add this line
 
 const session = require('express-session');
 
@@ -37,6 +40,7 @@ app.use('/user', userRoutes);
 app.use('/protected', protectedRoutes);
 app.use('/portfolio', portfolioRoutes);
 app.use('/transaction', transactionRoutes);
+app.use('/historicaldata', historicalDataRoutes); // Add this line
 
 // Alpaca API routes
 app.get('/account', AlpacaUtils.getAccountInformation);
