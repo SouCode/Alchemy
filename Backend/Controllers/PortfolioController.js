@@ -97,10 +97,19 @@ exports.deleteHolding = async (req, res) => {
     try {
       const { id } = req.params;
       // Delete the holding using the ID
-      // Your code for deleting the holding goes here
       res.json({ message: 'Holding deleted successfully' });
     } catch (error) {
       res.status(500).json({ error: 'Failed to delete holding' });
     }
   };
   
+  
+exports.getStockPrice = async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    const stockPrice = await AlpacaUtils.getStockPrice(symbol);
+    res.json({ symbol, price: stockPrice });
+  } catch (error) {
+    res.status(500).json({ error: 'Error retrieving stock price' });
+  }
+};

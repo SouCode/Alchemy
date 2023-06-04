@@ -14,4 +14,7 @@ router.put('/:id', portfolioController.updateHolding);
 // Delete a holding from the portfolio
 router.delete('/:id', portfolioController.deleteHolding);
 
+router.get('/price/:symbol', portfolioController.getStockPrice);
+
+
 module.exports = router;

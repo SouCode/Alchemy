@@ -5,7 +5,7 @@ exports.getNews = async (req, res) => {
   try {
     const response = await axios.get('https://newsapi.org/v2/everything', {
       params: {
-        q: 'stocks', // You can modify the search query as per your requirements
+        q: 'stocks',
         apiKey: process.env.NEWS_API_KEY,
       },
     });
