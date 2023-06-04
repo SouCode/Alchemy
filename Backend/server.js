@@ -8,6 +8,8 @@ const AlpacaUtils = require('./Utils/AlpacaUtils');
 const portfolioRoutes = require('./Routes/PortfolioRoutes');
 const transactionRoutes = require('./Routes/TransactionRoutes');
 const historicalDataRoutes = require('./Routes/HistoricalDataRoutes'); // Add this line
+const newsRoutes = require('./Routes/NewsRoutes');
+
 
 const session = require('express-session');
 
@@ -40,7 +42,9 @@ app.use('/user', userRoutes);
 app.use('/protected', protectedRoutes);
 app.use('/portfolio', portfolioRoutes);
 app.use('/transaction', transactionRoutes);
-app.use('/historicaldata', historicalDataRoutes); // Add this line
+app.use('/historicaldata', historicalDataRoutes); 
+app.use('/news', newsRoutes);
+
 
 // Alpaca API routes
 app.get('/account', AlpacaUtils.getAccountInformation);

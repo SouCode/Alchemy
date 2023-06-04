@@ -1,4 +1,6 @@
 // Backend/Controllers/HistoricalDataController.js
+// Fetch in the front end to produce Charts
+// You can also produce charts for user performance in the other Transactions code
 
 const HistoricalData = require('../Models/HistoricalData');
 
