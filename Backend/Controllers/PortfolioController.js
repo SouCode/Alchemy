@@ -39,15 +39,30 @@ exports.getPortfolio = async (req, res) => {
 
 exports.addHolding = async (req, res) => {
   try {
-    const { symbol, quantity, averagePrice } = req.body;
+    const { symbol, quantity, averagePrice, isPaperTrade } = req.body;
     const userId = req.user._id;
 
-    const holding = await Portfolio.create({
-      userId,
-      symbol,
-      quantity,
-      averagePrice
-    });
+    let holding;
+    if (isPaperTrade) {
+      // Add the holding to the paper trade account
+      holding = {
+        symbol,
+        quantity,
+        averagePrice
+      };
+      await Portfolio.findOneAndUpdate(
+        { userId },
+        { $push: { paperTradeHoldings: holding } }
+      );
+    } else {
+      // Add the holding to the real portfolio
+      holding = await Portfolio.create({
+        userId,
+        symbol,
+        quantity,
+        averagePrice
+      });
+    }
 
     res.status(201).json(holding);
   } catch (error) {
@@ -55,6 +70,39 @@ exports.addHolding = async (req, res) => {
   }
 };
 
+  // Sell a holding from the portfolio (for paper trading)
+exports.sellHolding = async (req, res) => {
+  try {
+    const { symbol, quantity, isPaperTrade } = req.body;
+    const userId = req.user._id;
+
+    let updatedHolding;
+    if (isPaperTrade) {
+      // Remove the holding from the paper trade account
+      updatedHolding = await Portfolio.findOneAndUpdate(
+        { userId },
+        { $pull: { paperTradeHoldings: { symbol } } },
+        { new: true }
+      );
+    } else {
+      // Sell the holding from the real portfolio
+      updatedHolding = await Portfolio.findOneAndUpdate(
+        { userId, symbol },
+        { $inc: { quantity: -quantity } },
+        { new: true }
+      );
+    }
+
+    if (!updatedHolding) {
+      return res.status(404).json({ error: 'Holding not found' });
+    }
+
+    res.json(updatedHolding);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to sell holding' });
+  }
+};
+  
 
 
 exports.updateHolding = async (req, res) => {
@@ -103,7 +151,7 @@ exports.deleteHolding = async (req, res) => {
     }
   };
   
-  
+
 exports.getStockPrice = async (req, res) => {
   try {
     const { symbol } = req.params;
