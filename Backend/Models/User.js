@@ -16,6 +16,10 @@ const UserSchema = new mongoose.Schema({
     secretKey: {
       type: String
     }
+  },
+  leaderboardVisible: {
+    type: Boolean,
+    default: true
   }
 });
 
