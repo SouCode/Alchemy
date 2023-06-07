@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT:wght@700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Old Standard TT', serif;
+}
+
+.banner {
+    position: relative;
+    width: 100vw; /* Use vw (viewport width) instead of vh */
+    height: 100vh;
+    background: url(/src/assets/AlchemyBG.png);
+    background-size: cover;
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
