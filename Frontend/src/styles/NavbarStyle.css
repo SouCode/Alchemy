@@ -49,10 +49,11 @@ body {
     display: none;
 }
 
+/* white menu background */
 .menuToggleCheckbox:checked ~ .menu {
     height: 720px;
     width: 120px;
-    border-radius: 10px;
+    border-radius: 70px;
 }
 
 .menuToggleCheckbox:checked ~ .menu ul {
@@ -76,7 +77,7 @@ body {
     height: 80px;
     width: 120px;
     background: #fff;
-    border-radius: 70px;
+    border-radius: 30px;
     transition: height 0.5s, width 0.5s, border-radius 0.5s;
 }
 
@@ -125,7 +126,7 @@ body {
 }
 
 .menu ul li:hover a {
-    color: #9e30e8;
+    color: #28e0ce;
 }
 
 .menuToggle i {
