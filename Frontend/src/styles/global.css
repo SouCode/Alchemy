@@ -6,3 +6,12 @@
   box-sizing: border-box;
   font-family: 'Old Standard TT', serif;
 }
+
+body {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--clr);
+  padding-left: 0; /* Update this line */
+}

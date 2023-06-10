@@ -14,6 +14,28 @@
       <img :src="require('@/assets/aura5.png')" style="--i:6;">        
     </div>
   </div>
+  <div class="menu">
+    <div class="toggle"></div>
+    <li style="--i:0">
+      <a href="#"></a>
+    </li>
+    <li style="--i:1">
+      <a href="#"></a>
+    </li>
+    <li style="--i:2">
+      <a href="#"></a>
+    </li>
+    <li style="--i:3">
+      <a href="#"></a>
+    </li>
+    <li style="--i:4">
+      <a href="#"></a>
+    </li>
+    <li style="--i:5">
+      <a href="#"></a>
+    </li>
+  </div>
+
 </template>
 
 
