@@ -4,10 +4,11 @@ const cors = require('cors');
 const passport = require('passport');
 const connectDB = require('./utils/database');
 const newsRoutes = require('./routes/newsRoutes');
+const dotenv = require('dotenv');
 
-require('dotenv').config();
+dotenv.config();
 
-const { PORT, SESSION_SECRET } = require('./config');
+const { PORT, SESSION_SECRET } = process.env;
 
 // Import alchemyAuthRoutes
 const alchemyAuthRoutes = require('./routes/alchemyAuthRoutes');
