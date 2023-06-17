@@ -1,52 +1,91 @@
-// Backend/server.js
-
 const express = require('express');
-const connectDB = require('./Utils/Database');
-const passportSetup = require('./Utils/GoogleAuth');
-const passport = require('passport');
-const AlpacaUtils = require('./Utils/AlpacaUtils');
-const portfolioRoutes = require('./Routes/PortfolioRoutes');
-const transactionRoutes = require('./Routes/TransactionRoutes');
-const historicalDataRoutes = require('./Routes/HistoricalDataRoutes');
-const newsRoutes = require('./Routes/NewsRoutes');
-
 const session = require('express-session');
+const cors = require('cors');
+const passport = require('passport');
+const connectDB = require('./utils/database');
+const newsRoutes = require('./routes/newsRoutes');
 
 require('dotenv').config();
+
+const { PORT, SESSION_SECRET } = require('./config');
+
+// Import alchemyAuthRoutes
+const alchemyAuthRoutes = require('./routes/alchemyAuthRoutes');
+const AlchUsers = require('./models/alchemyUserModel');
+const stocksRoutes = require('./routes/stocksRoutes');
+const tradeRoutes = require('./routes/tradeRoutes'); 
 
 const app = express();
 connectDB();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
-}));
+// Set up session middleware
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+  })
+);
 
+// Initialize Passport
 app.use(passport.initialize());
+
+// Passport session management
 app.use(passport.session());
 
-const authRoutes = require('./Routes/AuthRoutes');
-const dashboardRoutes = require('./Routes/dashboardRoutes');
-const userRoutes = require('./Routes/UserRoutes');
-const protectedRoutes = require('./Routes/ProtectedRoutes');
+// Configure Passport local strategy
+const LocalStrategy = require('passport-local').Strategy;
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    // Implement your own authentication logic here
+    AlchUsers.findOne({ username }, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false, { message: 'User not found' });
+      }
+      if (!user.verifyPassword(password)) {
+        return done(null, false, { message: 'Incorrect password' });
+      }
+      return done(null, user);
+    });
+  })
+);
 
-app.use('/auth', authRoutes);
-app.use('/dashboard', dashboardRoutes);
-app.use('/user', userRoutes);
-app.use('/protected', protectedRoutes);
-app.use('/portfolio', portfolioRoutes);
-app.use('/transaction', transactionRoutes);
-app.use('/historicaldata', historicalDataRoutes);
+// Configure Passport's session management and serialization
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  AlchUsers.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
+
+// Use alchemyAuthRoutes
+app.use('/auth', alchemyAuthRoutes);
+app.use('/stocks', stocksRoutes);
 app.use('/news', newsRoutes);
+app.use('/trade', tradeRoutes); 
 
-// Alpaca API routes
-app.get('/account', AlpacaUtils.getAccountInformation);
-app.get('/portfolio', AlpacaUtils.getPortfolio);
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});

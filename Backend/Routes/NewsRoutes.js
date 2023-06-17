@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const newsController = require('../Controllers/NewsController');
+const NewsController = require('../controllers/newsController');
 
-router.get('/', newsController.getNews);
+router.get('/', NewsController.getNews); // Fix typo: change `newsController` to `NewsController`
 
 module.exports = router;

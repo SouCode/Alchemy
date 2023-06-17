@@ -10,9 +10,10 @@ exports.getNews = async (req, res) => {
       },
     });
 
-    const news = response.data.articles;
+    const news = response.data.articles.slice(0, 2); // Limit to 2 articles
     res.json(news);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch news' });
   }
 };
+
